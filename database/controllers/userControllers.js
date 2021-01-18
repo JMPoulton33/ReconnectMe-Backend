@@ -1,6 +1,5 @@
-'use strict';
-
 const User = require('../models/user.model.js');
+const Event = require('../models/event.model.js');
 
 const userControllers = {};
 
@@ -36,5 +35,38 @@ userControllers.findById = async (req, res) => {
     res.status = 500;
   }
 };
+
+userControllers.addEventToUser = async (req, res) => {
+  try {
+    const date = req.params.date;
+    const eventToAdd = new Event(req.body);
+
+    const targetUser = await User.findById(req.params.id);
+    targetUser.events[date].push(eventToAdd);
+
+    targetUser.markModified(`events.${date}`);
+
+    const update = await targetUser.save((err, doc) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    res.status(201);
+    res.send(update);
+  } catch (e) {
+    console.error('error: ', e);
+  }
+};
+
+// userControllers.addEventToUser = async (req, res) => {
+//   const date = req.params.date;
+
+//   const results = await User.findOne({
+//     `events.${date}.date`: '2021-01-01',
+//   });
+
+//   console.log('results: ', results);
+// };
 
 module.exports = userControllers;
