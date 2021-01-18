@@ -59,4 +59,32 @@ userControllers.addEventToUser = async (req, res) => {
   }
 };
 
+userControllers.toggleIsRequest = async (req, res) => {
+  try {
+    const eventID = req.params.eventID;
+    const date = req.params.date;
+
+    const targetUser = await User.findById(req.params.id);
+    const targetDate = targetUser.events[date];
+    const targetEvent = targetDate.find((event) => {
+      return event._id == eventID;
+    });
+
+    targetEvent.isRequest = !targetEvent.isRequest;
+
+    targetUser.markModified(`events.${date}`);
+
+    await targetUser.save((err, doc) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    res.status(201);
+    res.send(targetUser);
+  } catch (e) {
+    console.error('error: ', e);
+  }
+};
+
 module.exports = userControllers;

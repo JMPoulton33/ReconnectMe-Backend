@@ -10,6 +10,11 @@ const eventSchema = new mongoose.Schema({
     required: false,
     maxLength: 8,
   },
+  date: {
+    type: String,
+    required: true,
+    maxLength: 10,
+  },
   location: {
     //could end up using google location suggestions
     //would need to have type location with its own properties (longitude, latitude, postcode etc.)
