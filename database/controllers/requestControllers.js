@@ -1,31 +1,9 @@
 const User = require('../models/user.model.js');
 const Event = require('../models/event.model.js');
 
-const userControllers = {};
+const requestControllers = {};
 
-userControllers.getAll = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200);
-    res.send(users);
-  } catch (e) {
-    res.status = 500;
-    // Further handle your error on the back-end
-  }
-};
-
-userControllers.postOne = async (req, res) => {
-  try {
-    const newUser = await User.create(req.body);
-    res.status(201);
-    res.send(newUser);
-  } catch (e) {
-    res.status = 500;
-    // Further handle your error on the back-end
-  }
-};
-
-userControllers.findById = async (req, res) => {
+requestControllers.findById = async (req, res) => {
   try {
     const userId = req.params.id;
     const user = await User.findById(userId);
@@ -36,10 +14,11 @@ userControllers.findById = async (req, res) => {
   }
 };
 
-userControllers.addEventToUser = async (req, res) => {
+requestControllers.addRequestToUser = async (req, res) => {
   try {
     const date = req.params.date;
     const eventToAdd = new Event(req.body);
+    eventToAdd.isRequest = true;
 
     const targetUser = await User.findById(req.params.id);
     targetUser.events[date].push(eventToAdd);
@@ -59,4 +38,4 @@ userControllers.addEventToUser = async (req, res) => {
   }
 };
 
-module.exports = userControllers;
+module.exports = requestControllers;
